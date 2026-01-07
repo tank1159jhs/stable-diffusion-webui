@@ -303,7 +303,7 @@ class FrozenCLIPEmbedderWithCustomWordsBase(TextConditionalModel):
         self.input_key = getattr(wrapped, 'input_key', 'txt')
         self.return_pooled = getattr(self.wrapped, 'return_pooled', False)
 
-        self.legacy_ucg_val = None  # for sgm codebase
+        # self.legacy_ucg_val = None  # for sgm codebase
 
     def forward(self, texts):
         if opts.use_old_emphasis_implementation:

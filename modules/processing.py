@@ -28,8 +28,8 @@ import modules.images as images
 import modules.styles
 import modules.sd_models as sd_models
 import modules.sd_vae as sd_vae
-from ldm.data.util import AddMiDaS
-from ldm.models.diffusion.ddpm import LatentDepth2ImageDiffusion
+# from ldm.data.util import AddMiDaS
+# from ldm.models.diffusion.ddpm import LatentDepth2ImageDiffusion
 
 from einops import repeat, rearrange
 from blendmodes.blend import blendLayers, BlendType
@@ -303,9 +303,9 @@ class StableDiffusionProcessing:
 
     def depth2img_image_conditioning(self, source_image):
         # Use the AddMiDaS helper to Format our source image to suit the MiDaS model
-        transformer = AddMiDaS(model_type="dpt_hybrid")
-        transformed = transformer({"jpg": rearrange(source_image[0], "c h w -> h w c")})
-        midas_in = torch.from_numpy(transformed["midas_in"][None, ...]).to(device=shared.device)
+        # transformer = AddMiDaS(model_type="dpt_hybrid")
+        # transformed = transformer({"jpg": rearrange(source_image[0], "c h w -> h w c")})
+        # midas_in = torch.from_numpy(transformed["midas_in"][None, ...]).to(device=shared.device)
         midas_in = repeat(midas_in, "1 ... -> n ...", n=self.batch_size)
 
         conditioning_image = images_tensor_to_samples(source_image*0.5+0.5, approximation_indexes.get(opts.sd_vae_encode_method))
@@ -377,8 +377,8 @@ class StableDiffusionProcessing:
 
         # HACK: Using introspection as the Depth2Image model doesn't appear to uniquely
         # identify itself with a field common to all models. The conditioning_key is also hybrid.
-        if isinstance(self.sd_model, LatentDepth2ImageDiffusion):
-            return self.depth2img_image_conditioning(source_image)
+        #         if isinstance(self.sd_model, LatentDepth2ImageDiffusion):
+        #             return self.depth2img_image_conditioning(source_image)
 
         if self.sd_model.cond_stage_key == "edit":
             return self.edit_image_conditioning(source_image)
@@ -744,7 +744,6 @@ def create_infotext(p, all_prompts, all_seeds, all_subseeds, comments=None, iter
         func(p, index, **kwargs) -> str | None
     note: for better future compatibility even though this function will have access to all variables in the locals(),
         it is recommended to only use the arguments present in the function signature of create_infotext.
-    For actual implementation examples, see StableDiffusionProcessingTxt2Img.init > get_hr_prompt.
     """
 
     if use_main_prompt:

@@ -1,21 +1,46 @@
+# Python
 __pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Models
 *.ckpt
 *.safetensors
 *.pth
-.DS_Store
+/models/**/*
 /ESRGAN/*
 /SwinIR/*
-/repositories
-/venv
-/tmp
-/model.ckpt
-/models/**/*
 /GFPGANv1.3.pth
 /gfpgan/weights/*.pth
-/ui-config.json
+/model.ckpt
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Repositories
+/repositories
+
+# Virtual Environment
+/venv
+/env
+
+# Temporary
+/tmp
+temp-*
+*.tmp
+*.bak
+*~
+
+# Outputs
 /outputs
+/ui-config.json
 /config.json
 /log
+*.log
 /webui.settings.bat
 /embeddings
 /styles.csv
@@ -25,20 +50,32 @@ __pycache__
 /webui-user.sh
 /interrogate
 /user.css
-/.idea
 notification.mp3
 /SwinIR
 /textual_inversion
-.vscode
-/extensions
 /test/stdout.txt
 /test/stderr.txt
 /cache.json*
 /config_states/
-/node_modules
-/package-lock.json
-/.coverage*
-/test/test_outputs
-/cache
 trace.json
 /sysinfo-????-??-??-??-??.json
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Extensions
+/extensions
+
+# Testing
+/test/test_outputs
+/.coverage*
+
+# Cache
+/cache
+
+# Node.js
+/node_modules
+/package-lock.json

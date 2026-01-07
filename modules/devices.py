@@ -48,18 +48,19 @@ def get_cuda_device_string():
 
 
 def get_optimal_device_name():
+    # lean: macOS 환경에서는 device를 강제로 "mps"(Apple Silicon) 또는 "cpu"로 지정
+    import sys
+    import torch
+    if sys.platform == "darwin":
+        return "mps" if torch.backends.mps.is_available() else "cpu"
     if torch.cuda.is_available():
         return get_cuda_device_string()
-
     if has_mps():
         return "mps"
-
     if has_xpu():
         return xpu_specific.get_xpu_device_string()
-
     if npu_specific.has_npu:
         return npu_specific.get_npu_device_string()
-
     return "cpu"
 
 
@@ -288,8 +289,9 @@ def force_model_fp16():
     prevent this casting.
     """
     assert force_fp16
-    import sgm.modules.diffusionmodules.util as sgm_util
     import ldm.modules.diffusionmodules.util as ldm_util
-    sgm_util.GroupNorm32 = torch.nn.GroupNorm
     ldm_util.GroupNorm32 = torch.nn.GroupNorm
+    # import sgm.modules.diffusionmodules.util as sgm_util
+    # sgm_util.GroupNorm32 = torch.nn.GroupNorm
+    # print("ldm/sgm GroupNorm32 replaced with normal torch.nn.GroupNorm due to `--precision half`.")
     print("ldm/sgm GroupNorm32 replaced with normal torch.nn.GroupNorm due to `--precision half`.")

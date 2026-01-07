@@ -30,15 +30,8 @@ def uniform(n, sigma_min, sigma_max, inner_model, device):
     return inner_model.get_sigmas(n).to(device)
 
 
-def sgm_uniform(n, sigma_min, sigma_max, inner_model, device):
-    start = inner_model.sigma_to_t(torch.tensor(sigma_max))
-    end = inner_model.sigma_to_t(torch.tensor(sigma_min))
-    sigs = [
-        inner_model.t_to_sigma(ts)
-        for ts in torch.linspace(start, end, n + 1)[:-1]
-    ]
-    sigs += [0.0]
-    return torch.FloatTensor(sigs).to(device)
+# def sgm_uniform(n, sigma_min, sigma_max, inner_model, device):
+#     pass
 
 
 def get_align_your_steps_sigmas(n, sigma_min, sigma_max, device):
@@ -87,21 +80,8 @@ def simple_scheduler(n, sigma_min, sigma_max, inner_model, device):
     return torch.FloatTensor(sigs).to(device)
 
 
-def normal_scheduler(n, sigma_min, sigma_max, inner_model, device, sgm=False, floor=False):
-    start = inner_model.sigma_to_t(torch.tensor(sigma_max))
-    end = inner_model.sigma_to_t(torch.tensor(sigma_min))
-
-    if sgm:
-        timesteps = torch.linspace(start, end, n + 1)[:-1]
-    else:
-        timesteps = torch.linspace(start, end, n)
-
-    sigs = []
-    for x in range(len(timesteps)):
-        ts = timesteps[x]
-        sigs.append(inner_model.t_to_sigma(ts))
-    sigs += [0.0]
-    return torch.FloatTensor(sigs).to(device)
+# def normal_scheduler(n, sigma_min, sigma_max, inner_model, device, sgm=False, floor=False):
+#     pass
 
 
 def ddim_scheduler(n, sigma_min, sigma_max, inner_model, device):
@@ -133,11 +113,11 @@ schedulers = [
     Scheduler('karras', 'Karras', k_diffusion.sampling.get_sigmas_karras, default_rho=7.0),
     Scheduler('exponential', 'Exponential', k_diffusion.sampling.get_sigmas_exponential),
     Scheduler('polyexponential', 'Polyexponential', k_diffusion.sampling.get_sigmas_polyexponential, default_rho=1.0),
-    Scheduler('sgm_uniform', 'SGM Uniform', sgm_uniform, need_inner_model=True, aliases=["SGMUniform"]),
+    # Scheduler('sgm_uniform', 'SGM Uniform', sgm_uniform, need_inner_model=True, aliases=["SGMUniform"]),
     Scheduler('kl_optimal', 'KL Optimal', kl_optimal),
     Scheduler('align_your_steps', 'Align Your Steps', get_align_your_steps_sigmas),
     Scheduler('simple', 'Simple', simple_scheduler, need_inner_model=True),
-    Scheduler('normal', 'Normal', normal_scheduler, need_inner_model=True),
+    # Scheduler('normal', 'Normal', normal_scheduler, need_inner_model=True),
     Scheduler('ddim', 'DDIM', ddim_scheduler, need_inner_model=True),
     Scheduler('beta', 'Beta', beta_scheduler, need_inner_model=True),
 ]

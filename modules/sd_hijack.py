@@ -15,10 +15,9 @@ import ldm.models.diffusion.ddim
 import ldm.models.diffusion.plms
 import ldm.modules.encoders.modules
 
-import sgm.modules.attention
-import sgm.modules.diffusionmodules.model
-import sgm.modules.diffusionmodules.openaimodel
-import sgm.modules.encoders.modules
+# import sgm.modules.diffusionmodules.model
+# import sgm.modules.diffusionmodules.openaimodel
+# import sgm.modules.encoders.modules
 
 attention_CrossAttention_forward = ldm.modules.attention.CrossAttention.forward
 diffusionmodules_model_nonlinearity = ldm.modules.diffusionmodules.model.nonlinearity
@@ -27,7 +26,7 @@ diffusionmodules_model_AttnBlock_forward = ldm.modules.diffusionmodules.model.At
 # new memory efficient cross attention blocks do not support hypernets and we already
 # have memory efficient cross attention anyway, so this disables SD2.0's memory efficient cross attention
 ldm.modules.attention.MemoryEfficientCrossAttention = ldm.modules.attention.CrossAttention
-ldm.modules.attention.BasicTransformerBlock.ATTENTION_MODES["softmax-xformers"] = ldm.modules.attention.CrossAttention
+# ldm.modules.attention.BasicTransformerBlock.ATTENTION_MODES["softmax-xformers"] = ldm.modules.attention.CrossAttention
 
 # silence new console spam from SD2
 ldm.modules.attention.print = shared.ldm_print
@@ -41,8 +40,8 @@ current_optimizer: sd_hijack_optimizations.SdOptimization = None
 ldm_patched_forward = sd_unet.create_unet_forward(ldm.modules.diffusionmodules.openaimodel.UNetModel.forward)
 ldm_original_forward = patches.patch(__file__, ldm.modules.diffusionmodules.openaimodel.UNetModel, "forward", ldm_patched_forward)
 
-sgm_patched_forward = sd_unet.create_unet_forward(sgm.modules.diffusionmodules.openaimodel.UNetModel.forward)
-sgm_original_forward = patches.patch(__file__, sgm.modules.diffusionmodules.openaimodel.UNetModel, "forward", sgm_patched_forward)
+# sgm_patched_forward = sd_unet.create_unet_forward(sgm.modules.diffusionmodules.openaimodel.UNetModel.forward)
+# sgm_original_forward = patches.patch(__file__, sgm.modules.diffusionmodules.openaimodel.UNetModel, "forward", sgm_patched_forward)
 
 
 def list_optimizers():
@@ -69,8 +68,8 @@ def apply_optimizations(option=None):
     ldm.modules.diffusionmodules.model.nonlinearity = silu
     ldm.modules.diffusionmodules.openaimodel.th = sd_hijack_unet.th
 
-    sgm.modules.diffusionmodules.model.nonlinearity = silu
-    sgm.modules.diffusionmodules.openaimodel.th = sd_hijack_unet.th
+    # sgm.modules.diffusionmodules.model.nonlinearity = silu
+    # sgm.modules.diffusionmodules.openaimodel.th = sd_hijack_unet.th
 
     if current_optimizer is not None:
         current_optimizer.undo()
@@ -105,9 +104,9 @@ def undo_optimizations():
     ldm.modules.attention.CrossAttention.forward = hypernetwork.attention_CrossAttention_forward
     ldm.modules.diffusionmodules.model.AttnBlock.forward = diffusionmodules_model_AttnBlock_forward
 
-    sgm.modules.diffusionmodules.model.nonlinearity = diffusionmodules_model_nonlinearity
-    sgm.modules.attention.CrossAttention.forward = hypernetwork.attention_CrossAttention_forward
-    sgm.modules.diffusionmodules.model.AttnBlock.forward = diffusionmodules_model_AttnBlock_forward
+    # sgm.modules.diffusionmodules.model.nonlinearity = diffusionmodules_model_nonlinearity
+    # sgm.modules.attention.CrossAttention.forward = hypernetwork.attention_CrossAttention_forward
+    # sgm.modules.diffusionmodules.model.AttnBlock.forward = diffusionmodules_model_AttnBlock_forward
 
 
 def fix_checkpoint():
@@ -266,8 +265,8 @@ class StableDiffusionModelHijack:
             sd_unet.original_forward = ldm_original_forward
         elif isinstance(m, modules.models.diffusion.ddpm_edit.LatentDiffusion):
             sd_unet.original_forward = ldm_original_forward
-        elif isinstance(m, sgm.models.diffusion.DiffusionEngine):
-            sd_unet.original_forward = sgm_original_forward
+        # elif isinstance(m, sgm.models.diffusion.DiffusionEngine):
+        #     sd_unet.original_forward = sgm_original_forward
         else:
             sd_unet.original_forward = None
 

@@ -87,18 +87,13 @@ def spatial_transformer_forward(_, self, x: torch.Tensor, context=None):
     b, c, h, w = x.shape
     x_in = x
     x = self.norm(x)
-    if not self.use_linear:
-        x = self.proj_in(x)
+    # self.use_linear 관련 분기 제거, 항상 proj_in/proj_out 사용
+    x = self.proj_in(x)
     x = x.permute(0, 2, 3, 1).reshape(b, h * w, c)
-    if self.use_linear:
-        x = self.proj_in(x)
     for i, block in enumerate(self.transformer_blocks):
         x = block(x, context=context[i])
-    if self.use_linear:
-        x = self.proj_out(x)
     x = x.view(b, h, w, c).permute(0, 3, 1, 2)
-    if not self.use_linear:
-        x = self.proj_out(x)
+    x = self.proj_out(x)
     return x + x_in
 
 
@@ -139,7 +134,7 @@ CondFunc('ldm.models.diffusion.ddpm.LatentDiffusion.encode_first_stage', first_s
 CondFunc('ldm.models.diffusion.ddpm.LatentDiffusion.get_first_stage_encoding', lambda orig_func, *args, **kwargs: orig_func(*args, **kwargs).float(), first_stage_cond)
 
 CondFunc('ldm.models.diffusion.ddpm.LatentDiffusion.apply_model', apply_model)
-CondFunc('sgm.modules.diffusionmodules.wrappers.OpenAIWrapper.forward', apply_model)
+# CondFunc('sgm.modules.diffusionmodules.wrappers.OpenAIWrapper.forward', apply_model)
 
 
 def timestep_embedding_cast_result(orig_func, timesteps, *args, **kwargs):
@@ -151,4 +146,4 @@ def timestep_embedding_cast_result(orig_func, timesteps, *args, **kwargs):
 
 
 CondFunc('ldm.modules.diffusionmodules.openaimodel.timestep_embedding', timestep_embedding_cast_result)
-CondFunc('sgm.modules.diffusionmodules.openaimodel.timestep_embedding', timestep_embedding_cast_result)
+# CondFunc('sgm.modules.diffusionmodules.openaimodel.timestep_embedding', timestep_embedding_cast_result)

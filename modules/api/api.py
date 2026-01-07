@@ -725,7 +725,9 @@ class Api:
 
     def get_sd_models(self):
         import modules.sd_models as sd_models
-        return [{"title": x.title, "model_name": x.model_name, "hash": x.shorthash, "sha256": x.sha256, "filename": x.filename, "config": find_checkpoint_config_near_filename(x)} for x in sd_models.checkpoints_list.values()]
+        # checkpoints_list가 list인 경우와 dict인 경우 모두 처리
+        checkpoints = sd_models.checkpoints_list if isinstance(sd_models.checkpoints_list, list) else sd_models.checkpoints_list.values()
+        return [{"title": x.title, "model_name": x.model_name, "hash": x.shorthash, "sha256": x.sha256, "filename": x.filename, "config": find_checkpoint_config_near_filename(x)} for x in checkpoints]
 
     def get_sd_vaes(self):
         import modules.sd_vae as sd_vae

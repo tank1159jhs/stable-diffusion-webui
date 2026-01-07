@@ -15,11 +15,11 @@ from modules.hypernetworks import hypernetwork
 import ldm.modules.attention
 import ldm.modules.diffusionmodules.model
 
-import sgm.modules.attention
-import sgm.modules.diffusionmodules.model
+# import sgm.modules.attention
+# import sgm.modules.diffusionmodules.model
 
 diffusionmodules_model_AttnBlock_forward = ldm.modules.diffusionmodules.model.AttnBlock.forward
-sgm_diffusionmodules_model_AttnBlock_forward = sgm.modules.diffusionmodules.model.AttnBlock.forward
+# sgm_diffusionmodules_model_AttnBlock_forward = sgm.modules.diffusionmodules.model.AttnBlock.forward
 
 
 class SdOptimization:
@@ -44,8 +44,8 @@ class SdOptimization:
         ldm.modules.attention.CrossAttention.forward = hypernetwork.attention_CrossAttention_forward
         ldm.modules.diffusionmodules.model.AttnBlock.forward = diffusionmodules_model_AttnBlock_forward
 
-        sgm.modules.attention.CrossAttention.forward = hypernetwork.attention_CrossAttention_forward
-        sgm.modules.diffusionmodules.model.AttnBlock.forward = sgm_diffusionmodules_model_AttnBlock_forward
+        # sgm.modules.attention.CrossAttention.forward = hypernetwork.attention_CrossAttention_forward
+        # sgm.modules.diffusionmodules.model.AttnBlock.forward = sgm_diffusionmodules_model_AttnBlock_forward
 
 
 class SdOptimizationXformers(SdOptimization):
@@ -59,8 +59,8 @@ class SdOptimizationXformers(SdOptimization):
     def apply(self):
         ldm.modules.attention.CrossAttention.forward = xformers_attention_forward
         ldm.modules.diffusionmodules.model.AttnBlock.forward = xformers_attnblock_forward
-        sgm.modules.attention.CrossAttention.forward = xformers_attention_forward
-        sgm.modules.diffusionmodules.model.AttnBlock.forward = xformers_attnblock_forward
+        # sgm.modules.attention.CrossAttention.forward = xformers_attention_forward
+        # sgm.modules.diffusionmodules.model.AttnBlock.forward = xformers_attnblock_forward
 
 
 class SdOptimizationSdpNoMem(SdOptimization):
@@ -75,8 +75,8 @@ class SdOptimizationSdpNoMem(SdOptimization):
     def apply(self):
         ldm.modules.attention.CrossAttention.forward = scaled_dot_product_no_mem_attention_forward
         ldm.modules.diffusionmodules.model.AttnBlock.forward = sdp_no_mem_attnblock_forward
-        sgm.modules.attention.CrossAttention.forward = scaled_dot_product_no_mem_attention_forward
-        sgm.modules.diffusionmodules.model.AttnBlock.forward = sdp_no_mem_attnblock_forward
+        # sgm.modules.attention.CrossAttention.forward = scaled_dot_product_no_mem_attention_forward
+        # sgm.modules.diffusionmodules.model.AttnBlock.forward = sdp_no_mem_attnblock_forward
 
 
 class SdOptimizationSdp(SdOptimizationSdpNoMem):
@@ -88,8 +88,8 @@ class SdOptimizationSdp(SdOptimizationSdpNoMem):
     def apply(self):
         ldm.modules.attention.CrossAttention.forward = scaled_dot_product_attention_forward
         ldm.modules.diffusionmodules.model.AttnBlock.forward = sdp_attnblock_forward
-        sgm.modules.attention.CrossAttention.forward = scaled_dot_product_attention_forward
-        sgm.modules.diffusionmodules.model.AttnBlock.forward = sdp_attnblock_forward
+        # sgm.modules.attention.CrossAttention.forward = scaled_dot_product_attention_forward
+        # sgm.modules.diffusionmodules.model.AttnBlock.forward = sdp_attnblock_forward
 
 
 class SdOptimizationSubQuad(SdOptimization):
@@ -103,8 +103,8 @@ class SdOptimizationSubQuad(SdOptimization):
     def apply(self):
         ldm.modules.attention.CrossAttention.forward = sub_quad_attention_forward
         ldm.modules.diffusionmodules.model.AttnBlock.forward = sub_quad_attnblock_forward
-        sgm.modules.attention.CrossAttention.forward = sub_quad_attention_forward
-        sgm.modules.diffusionmodules.model.AttnBlock.forward = sub_quad_attnblock_forward
+        # sgm.modules.attention.CrossAttention.forward = sub_quad_attention_forward
+        # sgm.modules.diffusionmodules.model.AttnBlock.forward = sub_quad_attnblock_forward
 
 
 class SdOptimizationV1(SdOptimization):
@@ -115,7 +115,7 @@ class SdOptimizationV1(SdOptimization):
 
     def apply(self):
         ldm.modules.attention.CrossAttention.forward = split_cross_attention_forward_v1
-        sgm.modules.attention.CrossAttention.forward = split_cross_attention_forward_v1
+        # sgm.modules.attention.CrossAttention.forward = split_cross_attention_forward_v1
 
 
 class SdOptimizationInvokeAI(SdOptimization):
@@ -128,7 +128,7 @@ class SdOptimizationInvokeAI(SdOptimization):
 
     def apply(self):
         ldm.modules.attention.CrossAttention.forward = split_cross_attention_forward_invokeAI
-        sgm.modules.attention.CrossAttention.forward = split_cross_attention_forward_invokeAI
+        # sgm.modules.attention.CrossAttention.forward = split_cross_attention_forward_invokeAI
 
 
 class SdOptimizationDoggettx(SdOptimization):
@@ -139,8 +139,8 @@ class SdOptimizationDoggettx(SdOptimization):
     def apply(self):
         ldm.modules.attention.CrossAttention.forward = split_cross_attention_forward
         ldm.modules.diffusionmodules.model.AttnBlock.forward = cross_attention_attnblock_forward
-        sgm.modules.attention.CrossAttention.forward = split_cross_attention_forward
-        sgm.modules.diffusionmodules.model.AttnBlock.forward = cross_attention_attnblock_forward
+        # sgm.modules.attention.CrossAttention.forward = split_cross_attention_forward
+        # sgm.modules.diffusionmodules.model.AttnBlock.forward = cross_attention_attnblock_forward
 
 
 def list_optimizers(res):
