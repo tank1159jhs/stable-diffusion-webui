@@ -1,0 +1,75 @@
+import os
+import torch
+import safetensors.torch
+from omegaconf import OmegaConf
+from modules import paths, devices, sd_vae
+import modules.shared
+
+# 🎯 자동 모델 감지 (lean + flexible)
+def find_available_model():
+    """
+    models/Stable-diffusion 폴더에서 사용 가능한 모델 자동 감지
+    우선순위:
+    1. Realistic Vision (실사)
+    2. Deliberate (시네마틱)
+    3. japaneseDollLikeness (애니메이션)
+    4. 기타 .safetensors / .gguf 파일
+    """
+    model_dir = os.path.join(paths.models_path, "Stable-diffusion")
+    
+    # 우선순위 목록 (실사 → 애니메이션 순)
+    priority_models = [
+        "realisticVisionV51_v51VAE.safetensors",
+        "realisticVisionV60B1_v51VAE.safetensors",
+        "realistic_vision_v60_b1_vae.gguf",
+        "deliberate_v2.safetensors",
+        "dreamshaper_8.safetensors",
+        "japaneseDollLikeness.safetensors"
+    ]
+    
+    # 1. 우선순위 모델 찾기
+    for model_name in priority_models:
+        model_path = os.path.join(model_dir, model_name)
+        if os.path.exists(model_path):
+            print(f"✅ 모델 발견: {model_name}")
+            return model_path
+    
+    # 2. 폴더 내 모든 .safetensors/.gguf 파일 찾기
+    if os.path.exists(model_dir):
+        all_files = os.listdir(model_dir)
+        for file in all_files:
+            if file.endswith(('.safetensors', '.gguf')):
+                model_path = os.path.join(model_dir, file)
+                print(f"✅ 자동 감지 모델: {file}")
+                return model_path
+    
+    # 3. 모델을 찾지 못함
+    raise FileNotFoundError(
+        f"⚠️ 모델 폴더에 .safetensors 또는 .gguf 파일이 없습니다!\n"
+        f"폴더: {model_dir}\n"
+        f"다운로드 가이드: /Users/systemi/stable-diffusion-webui/DOWNLOAD_REALISTIC_MODELS.md"
+    )
+
+# 자동 모델 감지
+MODEL_FILENAME = find_available_model()
+print(f"🎨 사용 모델: {os.path.basename(MODEL_FILENAME)}")
+
+# CheckpointInfo 클래스 정의 (AUTOMATIC1111 호환)
+class CheckpointInfo:
+    def __init__(self, filename):
+        self.filename = filename
+        self.title = os.path.basename(filename)
+        self.model_name = os.path.splitext(os.path.basename(filename))[0]
+        self.hash = self.model_name
+        self.shorthash = self.model_name[:10]
+        self.sha256 = self.model_name
+        self.name = self.title
+        self.name_for_extra = self.title
+
+# checkpoints_list를 CheckpointInfo 객체 리스트로 변경
+_checkpoint_info = CheckpointInfo(MODEL_FILENAME)
+checkpoints_list = [_checkpoint_info]
+checkpoint_aliases = {os.path.basename(MODEL_FILENAME): _checkpoint_info}
+model_path = os.path.dirname(MODEL_FILENAME)
+
+# ... (나머지 코드는 동일)

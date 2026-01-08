@@ -24,6 +24,11 @@ __pycache__
 # Repositories
 /repositories
 
+# Auto-generated libraries (runtime dependencies)
+/k_diffusion/
+/ldm/
+/taming/
+
 # Virtual Environment
 /venv
 /env
